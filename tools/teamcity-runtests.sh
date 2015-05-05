@@ -42,7 +42,7 @@ pip install --upgrade pytest-cov coverage coveralls pytest-capturelog
 # display the selector used on this platform, for py27 or earlier without 'selectors'
 # module, hide and ignore error of any traceback due to ImportError.
 python -c 'import selectors; print("DefaultSelector: {0}".format(selectors.DefaultSelector))' \
-    2>/dev/null || true
+    || true
 
 # run tests
 cd $here/..
