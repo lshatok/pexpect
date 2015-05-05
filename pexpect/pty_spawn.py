@@ -404,6 +404,7 @@ class spawn(SpawnBase):
 
         This is a wrapper around os.read(). It uses select.select() to
         implement the timeout. '''
+        print(('read_nonblocking', size, timeout))
 
         if self.closed:
             raise ValueError('I/O operation on closed file.')
@@ -421,6 +422,7 @@ class spawn(SpawnBase):
             r, w, e = self.__select([self.child_fd], [], [], 0)
             if not r:
                 self.flag_eof = True
+                print('raise_eof')
                 raise EOF('End Of File (EOF). Braindead platform.')
         elif self.__irix_hack:
             # Irix takes a long time before it realizes a child was terminated.
@@ -439,6 +441,7 @@ class spawn(SpawnBase):
                 # processes are alive; timeout on the select; and
                 # then finally admit that they are not alive.
                 self.flag_eof = True
+                print('raise_eof')
                 raise EOF('End of File (EOF). Very slow platform.')
             else:
                 raise TIMEOUT('Timeout exceeded.')
@@ -567,6 +570,7 @@ class spawn(SpawnBase):
     def eof(self):
         '''This returns True if the EOF exception was ever raised.
         '''
+        print('chk_eof')
         return self.flag_eof
 
     def terminate(self, force=False):
@@ -575,6 +579,7 @@ class spawn(SpawnBase):
         returns True if the child was terminated. This returns False if the
         child could not be terminated. '''
 
+        print('terminate')
         if not self.isalive():
             return True
         try:
@@ -639,6 +644,7 @@ class spawn(SpawnBase):
         exitstatus or signalstatus of the child. This returns True if the child
         process appears to be running or False if not. It can take literally
         SECONDS for Solaris to return the right status. '''
+        print('isalive?')
 
         ptyproc = self.ptyproc
         with _wrap_ptyprocess_err():
@@ -650,6 +656,7 @@ class spawn(SpawnBase):
             self.signalstatus = ptyproc.signalstatus
             self.terminated = True
 
+        print('isalive {0}'.format(alive))
         return alive
 
     def kill(self, sig):

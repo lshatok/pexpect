@@ -106,7 +106,7 @@ def display_bitmask(kind, bitmap, value):
     print('{0} {1}   {2}'.format('-' * col1_width,
                                  '-' * col2_width,
                                  '-' * max(map(len, bitmap.values()))))
-    for flag_name, description in bitmap.items():
+    for flag_name, description in sorted(bitmap.items()):
         try:
             bitmask = getattr(termios, flag_name)
             bit_val = 'on' if bool(value & bitmask) else 'off'
@@ -135,7 +135,7 @@ def display_ctl_chars(index, cc):
     print('{0}   {1} {2}'.format('-' * col1_width,
                                  '-' * col2_width,
                                  '-' * 10))
-    for index_name, name in index.items():
+    for index_name, name in sorted(index.items()):
         try:
             index = getattr(termios, index_name)
             value = cc[index]
@@ -160,7 +160,7 @@ def display_conf(kind, names, getter):
                      value='value',
                      col1_width=col1_width))
     print('{0} {1}'.format('-' * col1_width, '-' * 27))
-    for name in names:
+    for name in sorted(names):
         try:
             value = getter(name)
         except OSError as err:

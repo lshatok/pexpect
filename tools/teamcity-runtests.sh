@@ -30,6 +30,13 @@ rmvirtualenv ${venv} || true
 mkvirtualenv -p `which python${pyversion}` ${venv} || true
 workon ${venv}
 
+# display the selector used on this platform, for py27 or earlier without 'selectors'
+# module, hide and ignore error of any traceback due to ImportError.
+python -c 'import selectors; ' \
+          'selector = selectors.DefaultSelector(); ' \
+          'print("DefaultSelector used by asyncio: {0}".format(selectors.DefaultSelector))' \
+    2>/dev/null || true
+
 # install ptyprocess
 cd $here/../../ptyprocess
 pip uninstall --yes ptyprocess || true

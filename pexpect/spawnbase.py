@@ -3,7 +3,7 @@ import os
 import sys
 import re
 import errno
-from .exceptions import ExceptionPexpect, EOF, TIMEOUT
+from .exceptions import TIMEOUT, EOF
 from .expect import Expecter, searcher_string, searcher_re
 
 PY3 = (sys.version_info[0] >= 3)
@@ -113,14 +113,17 @@ class SpawnBase(object):
         """
 
         try:
+            print('read {0}'.format(size))
             s = os.read(self.child_fd, size)
         except OSError as err:
             if err.args[0] == errno.EIO:
+                print('EOF')
                 # Linux-style EOF
                 self.flag_eof = True
                 raise EOF('End Of File (EOF). Exception style platform.')
             raise
         if s == b'':
+            print('EOF')
             # BSD-style EOF
             self.flag_eof = True
             raise EOF('End Of File (EOF). Empty string style platform.')
@@ -344,6 +347,7 @@ class SpawnBase(object):
         exp = Expecter(self, searcher_string(pattern_list), searchwindowsize)
         if async:
             from .async import expect_async
+            print('expect_async {0}, {1}'.format(exp, timeout))
             return expect_async(exp, timeout)
         else:
             return exp.expect_loop(timeout)

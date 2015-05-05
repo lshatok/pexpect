@@ -1,4 +1,5 @@
 import time
+import sys
 
 from .exceptions import EOF, TIMEOUT
 
@@ -11,6 +12,7 @@ class Expecter(object):
         self.searchwindowsize = searchwindowsize
     
     def new_data(self, data):
+        print('new_data {0!r}'.format(data))
         spawn = self.spawn
         searcher = self.searcher
 
@@ -29,6 +31,7 @@ class Expecter(object):
         spawn.buffer = incoming
     
     def eof(self, err=None):
+        print('exp do_eof')
         spawn = self.spawn
         from . import EOF
 
@@ -49,6 +52,7 @@ class Expecter(object):
             raise EOF(msg)
     
     def timeout(self, err=None):
+        print('exp timeout')
         spawn = self.spawn
         from . import TIMEOUT
 
@@ -68,6 +72,7 @@ class Expecter(object):
             raise TIMEOUT(msg)
 
     def errored(self):
+        print(('errored',))
         spawn = self.spawn
         spawn.before = spawn.buffer
         spawn.after = None
@@ -76,6 +81,7 @@ class Expecter(object):
     
     def expect_loop(self, timeout=-1):
         """Blocking expect"""
+        print('exp loop')
         spawn = self.spawn
         from . import EOF, TIMEOUT
 
@@ -86,7 +92,9 @@ class Expecter(object):
             incoming = spawn.buffer
             spawn.buffer = spawn.string_type()  # Treat buffer as new data
             while True:
+                print('>exp new_data')
                 idx = self.new_data(incoming)
+                print('<exp new_data {0}'.format(idx))
                 # Keep reading until exception or return.
                 if idx is not None:
                     return idx
@@ -99,8 +107,10 @@ class Expecter(object):
                 if timeout is not None:
                     timeout = end_time - time.time()
         except EOF as e:
+            print('exp EOF')
             return self.eof(e)
         except TIMEOUT as e:
+            print('exp timeout')
             return self.timeout(e)
         except:
             self.errored()
