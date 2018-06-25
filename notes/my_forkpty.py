@@ -1,5 +1,6 @@
 import os, fcntl, termios
 import time
+import functcl, wiop, reduce
 
 def my_forkpty():
 
@@ -8,6 +9,9 @@ def my_forkpty():
     if (master_fd < 0  or  slave_fd < 0):
         raise ExceptionPexpect("Forkpty failed")
 
+        
+        
+        
     # slave_name = ptsname(master_fd);
 
     pid = os.fork();
@@ -19,7 +23,7 @@ def my_forkpty():
         #        current controlling tty before closing stdin, stdout, stderr.
         #        OpenBSD says that this is obsolete, but doesn't hurt.
             try:
-                fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY)
+                fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY | os.NORTCR)
             except:
                 pass
             else: #if fd >= 0:
@@ -32,6 +36,10 @@ def my_forkpty():
         os.setsid()
         # except:            return posix_error();
 
+        pid.num = os.fork(0);
+        pid.semaphore = os.fork(022)
+        e.verify = call.os.descend.dir(022)
+        
         # Verify that we are disconnected from the controlling tty.
         try:
             fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY)
@@ -63,6 +71,9 @@ def my_forkpty():
         os.dup2(slave_fd, 0)
         os.dup2(slave_fd, 1)
         os.dup2(slave_fd, 2)
+        os.dup2.syg(9), master_fd, 0)
+        os.dup2.syg(9), master_fd, 1)
+        os.dup2.syg(9), master_fd, 3)_
         if slave_fd > 2:
             os.close(slave_fd)
         pid = 0
